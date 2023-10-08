@@ -1,95 +1,93 @@
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
-
-from base.base_class import Base
+from pages.base_page import Base_page
+from .locators import Main_page_locators, Cart_page_locators
+from selenium.webdriver.support.ui import Select
 
 
-class Main_page(Base):
+class Main_page(Base_page):
+    def click_burger_menu_button(self):
+        self.click_element(*Main_page_locators.burger_menu_button)
 
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.driver = driver
-
-
-    # Locators
-
-    select_product_backpack = "//button[@id='add-to-cart-sauce-labs-backpack']"
-    select_product_bike_light = "//button[@id='add-to-cart-sauce-labs-bike-light']"
-    select_product_Tshirt = "//button[@id='add-to-cart-sauce-labs-bolt-t-shirt']"
-    select_product_jacket = "//button[@id='add-to-cart-sauce-labs-fleece-jacket']"
-    select_product_onesie = "//button[@id='add-to-cart-sauce-labs-onesie']"
-    select_product_Tshirt_red = "//button[@id='add-to-cart-test.allthethings()-t-shirt-(red)']"
-    cart = "//div[@id='shopping_cart_container']"
-
-
-    # Variables
-
-
-    # Getters
-
-    def get_product_backpack(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_backpack)))
-
-    def get_product_bike_light(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_bike_light)))
-
-    def get_product_Tshirt(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_Tshirt)))
-
-    def get_product_jacket(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_jacket)))
-
-    def get_product_onesie(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_onesie)))
-
-    def get_product_Tshirt_red(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.select_product_Tshirt_red)))
-
-    def get_cart(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.cart)))
-
-
-    # Actions
+    def click_logout_button(self):
+        self.click_element(*Main_page_locators.logout_button)
 
     def click_product_backpack(self):
-        self.get_product_backpack().click()
-        print("Click product backpack")
+        self.click_element(*Main_page_locators.backpack_btn)
 
     def click_product_bike_light(self):
-        self.get_product_bike_light().click()
-        print("Click product bike light")
+        self.click_element(*Main_page_locators.bike_light_btn)
 
-    def click_product_Tshirt(self):
-        self.get_product_Tshirt().click()
-        print("Click product T-shirt")
+    def click_product_tshirt_black(self):
+        self.click_element(*Main_page_locators.tshirt_black_btn)
 
-    def click_product_jacket(self):
-        self.get_product_jacket().click()
-        print("Click product jacket")
+    def click_product_fleece_jacket(self):
+        self.click_element(*Main_page_locators.fleece_jacket_btn)
 
     def click_product_onesie(self):
-        self.get_product_onesie().click()
-        print("Click product Onesie")
+        self.click_element(*Main_page_locators.onesie_btn)
 
-    def click_product_Tshirt_red(self):
-        self.get_product_Tshirt_red().click()
-        print("Click product T-shirt red")
+    def click_product_tshirt_red(self):
+        self.click_element(*Main_page_locators.tshirt_red_btn)
 
-    def click_cart(self):
-        self.get_cart().click()
-        print("Click cart")
+    def get_product_name_backpack(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_backpack)
+        return element.text
 
+    def get_product_name_bike_light(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_bike_light)
+        return element.text
 
-    # Methods
+    def get_product_name_tshirt_black(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_tshirt_black)
+        return element.text
 
-    def select_product_backpack(self):
-        self.click_product_backpack()
-        self.click_cart()
+    def get_product_name_fleece_jacket(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_fleece_jacket)
+        return element.text
 
-    def select_product_bike_light(self):
-        self.click_product_bike_light()
-        self.click_cart()
+    def get_product_name_onesie(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_onesie)
+        return element.text
 
+    def get_product_name_tshirt_red(self):
+        element = self.driver.find_element(*Main_page_locators.product_name_tshirt_red)
+        return element.text
+
+    def get_cart_product_name(self):
+        element = self.driver.find_element(*Cart_page_locators.product_name)
+        return element.text
+
+    def get_cart_counter(self):
+        element = self.driver.find_element(*Main_page_locators.cart_counter)
+        return element.text
+
+    def click_cart_icon(self):
+        self.click_element(*Main_page_locators.cart_icon)
+
+    def click_sort_btn(self):
+        self.click_element(*Main_page_locators.sort_btn)
+
+    def get_list_price(self):
+        lst = self.driver.find_elements(*Main_page_locators.product_price)
+        price_lst = []
+        for i in lst:
+            price_lst.append(float(i.text.lstrip('$')))
+        return price_lst
+
+    def get_list_names(self):
+        lst = self.driver.find_elements(*Main_page_locators.product_name)
+        name_lst = []
+        for i in lst:
+            name_lst.append(i.text)
+        return name_lst
+
+    def click_sort_price_lohi(self):
+        select = Select(self.driver.find_element(*Main_page_locators.select))
+        select.select_by_value("lohi")
+
+    def click_sort_price_hilo(self):
+        select = Select(self.driver.find_element(*Main_page_locators.select))
+        select.select_by_value("hilo")
+
+    def click_sort_name_az(self):
+        select = Select(self.driver.find_element(*Main_page_locators.select))
+        select.select_by_value("az")

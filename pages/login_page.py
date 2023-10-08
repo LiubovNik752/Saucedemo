@@ -1,83 +1,33 @@
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import time
+from .base_page import Base_page
+from .locators import Login_page_locators
 
-from base.base_class import Base
-
-
-class Login_page(Base):
-
-    url = 'https://www.saucedemo.com/'
-
-    def __init__(self, driver):
-        super().__init__(driver)
-        self.driver = driver
+link = 'https://www.saucedemo.com/'
+standard_name = "standard_user"
+locked_name = "locked_out_user"
+correct_password = "secret_sauce"
+not_correct_password = "not_secret_sauce"
 
 
-    # Locators
+class Login_page(Base_page):
+    def open_login_page(self):
+        self.open_url()
+        self.assert_current_page(link)
 
-    user_name = "//input[@id='user-name']"
-    password = "//input[@id='password']"
-    login_button = "//input[@id='login-button']"
-    main_word = "//div[@class='app_logo']"
-    locked_word = "//h3[@data-test='error']"
+    def login_correct_user(self):
+        self.input_text(*Login_page_locators.user_name, standard_name)
 
+    def login_locked_user(self):
+        self.input_text(*Login_page_locators.user_name, locked_name)
 
-    # Variables
+    def enter_password(self):
+        self.input_text(*Login_page_locators.password, correct_password)
 
-    correct_name = "standard_user"
-    locked_name = "locked_out_user"
-    correct_password = "secret_sauce"
-
-
-    # Getters
-
-    def get_user_name(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.user_name)))
-
-    def get_password(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.password)))
-
-    def get_login_button(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.login_button)))
-
-    def get_main_word(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.main_word)))
-
-    def get_locked_word(self):
-        return WebDriverWait(self.driver, 30).until(EC.element_to_be_clickable((By.XPATH, self.locked_word)))
-
-
-    # Actions
-
-    def input_user_name(self, user_name):
-        self.get_user_name().send_keys(user_name)
-        print("Input user name")
-
-    def input_password(self, password):
-        self.get_password().send_keys(password)
-        print("Input password")
+    def enter_not_correct_password(self):
+        self.input_text(*Login_page_locators.password, not_correct_password)
 
     def click_login_button(self):
-        self.get_login_button().click()
-        print("Click login button")
+        self.click_element(*Login_page_locators.login_button)
 
-
-    # Methods
-
-    def authorization_positive(self):
-
-        self.input_user_name(self.correct_name)
-        self.input_password(self.correct_password)
-        self.click_login_button()
-        self.assert_word(self.get_main_word(), "Swag Labs")
-
-    def authorization_negative(self):
-        self.driver.get(self.url)
-        self.driver.maximize_window()
-        self.input_user_name(self.locked_name)
-        self.input_password(self.correct_password)
-        self.click_login_button()
-        self.assert_word(self.get_locked_word(), "Epic sadface: Sorry, this user has been locked out.")
+    def get_error_text(self):
+        element = self.driver.find_element(*Login_page_locators.error_text)
+        return element.text
