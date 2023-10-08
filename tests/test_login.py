@@ -45,3 +45,13 @@ class Test_login_page:
         page.click_login_button()
         error_text = page.get_error_text()
         assert error_text == "Epic sadface: Username and password do not match any user in this service"
+
+    @pytest.mark.extra
+    def test_authorization_wrong_username(self, driver):
+        page = Login_page(driver, self.link)
+        page.open_login_page()
+        page.login_not_correct_username()
+        page.enter_password()
+        page.click_login_button()
+        error_text = page.get_error_text()
+        assert error_text == "Epic sadface: Username and password do not match any user in this service"
