@@ -1,17 +1,34 @@
+import time
 import pytest
 from selenium import webdriver
+from pages.login_page import Login_page, link
 
-from pages.login_page import Login_page
 
-
-@pytest.fixture()
-def set_up():
+@pytest.fixture(scope="session")
+def driver():
     driver = webdriver.Chrome()
-
+    driver.maximize_window()
     url = 'https://www.saucedemo.com/'
     driver.get(url)
-    driver.maximize_window()
+    time.sleep(3)
 
-    yield set_up
+    yield driver
+
+    driver.quit()
+
+@pytest.fixture(scope="session")
+def check_in():
+    driver = webdriver.Chrome()
+    driver.maximize_window()
+    url = 'https://www.saucedemo.com/'
+    driver.get(url)
+    page = Login_page(driver, link)
+    page.open_login_page()
+    page.login_correct_user()
+    page.enter_password()
+    page.click_login_button()
+    time.sleep(3)
+
+    yield driver
 
     driver.quit()
